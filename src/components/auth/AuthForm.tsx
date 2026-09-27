@@ -129,10 +129,10 @@ export function AuthForm({
         <div className="my-7 h-px bg-border" />
 
         <form onSubmit={onVerify} className="space-y-5">
-          <OtpInput value={code} onChange={setCode} disabled={loading} />
+          <OtpInput value={code} onChange={setCode} disabled={loading} aria-describedby={error ? "verify-error" : undefined} aria-invalid={error ? "true" : "false"} />
 
           {error && (
-            <p className="rounded-lg border border-burgundy/40 bg-burgundy/10 px-3 py-2 text-sm text-burgundy-bright">
+            <p id="verify-error" role="alert" className="rounded-lg border border-burgundy/40 bg-burgundy/10 px-3 py-2 text-sm text-burgundy-bright">
               {error}
             </p>
           )}
@@ -182,32 +182,38 @@ export function AuthForm({
 
       <form onSubmit={onSubmit} className="space-y-5">
         <div>
-          <label className="text-sm font-medium text-foreground">
+          <label htmlFor="email-input" className="text-sm font-medium text-foreground">
             Email Address
           </label>
           <div className="mt-2 flex items-center gap-2 rounded-xl border border-border bg-surface-raised px-4 py-3 focus-within:border-burgundy-bright">
             <span className="text-muted">✉</span>
             <input
+              id="email-input"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter personal email here"
               autoComplete="email"
+              aria-invalid={error ? "true" : "false"}
+              aria-describedby={error ? "auth-error" : undefined}
               className="w-full bg-transparent text-sm text-foreground placeholder:text-muted/60 focus:outline-none"
             />
           </div>
         </div>
 
         <div>
-          <label className="text-sm font-medium text-foreground">Password</label>
+          <label htmlFor="password-input" className="text-sm font-medium text-foreground">Password</label>
           <div className="mt-2 flex items-center gap-2 rounded-xl border border-border bg-surface-raised px-4 py-3 focus-within:border-burgundy-bright">
             <span className="text-muted"></span>
             <input
+              id="password-input"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder={isSignup ? "Create a password (8+ chars)" : "Enter your password"}
               autoComplete={isSignup ? "new-password" : "current-password"}
+              aria-invalid={error ? "true" : "false"}
+              aria-describedby={error ? "auth-error" : undefined}
               className="w-full bg-transparent text-sm text-foreground placeholder:text-muted/60 focus:outline-none"
             />
           </div>
@@ -215,7 +221,7 @@ export function AuthForm({
         </div>
 
         {error && (
-          <p className="rounded-lg border border-burgundy/40 bg-burgundy/10 px-3 py-2 text-sm text-burgundy-bright">
+          <p id="auth-error" role="alert" className="rounded-lg border border-burgundy/40 bg-burgundy/10 px-3 py-2 text-sm text-burgundy-bright">
             {error}
           </p>
         )}
