@@ -1,3 +1,5 @@
+export const metadata = { title: "Authentication API — Octo" };
+
 import { Prose, Code, Callout } from "@/components/docs/DocsUI";
 
 export default function ApiAuth() {

@@ -1,3 +1,5 @@
+export const metadata = { title: "API Overview — Octo" };
+
 import Link from "next/link";
 import { Prose, Code } from "@/components/docs/DocsUI";
 

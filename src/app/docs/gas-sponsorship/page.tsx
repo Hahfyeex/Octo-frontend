@@ -1,3 +1,5 @@
+export const metadata = { title: "Gas Sponsorship — Octo" };
+
 import Link from "next/link";
 import { Prose, Callout, Code, Endpoint, ParamTable } from "@/components/docs/DocsUI";
 

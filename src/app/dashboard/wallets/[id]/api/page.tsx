@@ -1,8 +1,8 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import Link from "next/link";
 import { useAuth } from "@/lib/useAuth";
+import { WalletPageShell } from "@/components/dashboard/WalletPageShell";
 import {
   getWallet,
   getApiKey,
@@ -10,8 +10,6 @@ import {
   type WalletView,
   type ApiKeyInfo,
 } from "@/lib/wallets";
-import { WalletSidebar } from "@/components/dashboard/WalletSidebar";
-import { DashboardBackground } from "@/components/dashboard/DashboardBackground";
 import { PageSpinner } from "@/components/OctoSpinner";
 import { CopyButton } from "@/components/CopyButton";
 import { Modal } from "@/components/dashboard/Modal";
@@ -26,7 +24,7 @@ export default function DevelopersPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { user, token, loading, logout } = useAuth();
+  const { user, token, loading } = useAuth();
 
   const [wallet, setWallet] = useState<WalletView | null>(null);
   const [keyInfo, setKeyInfo] = useState<ApiKeyInfo | null>(null);
@@ -85,30 +83,13 @@ export default function DevelopersPage({
       : "Not generated";
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-background">
-      <DashboardBackground />
+    <>
+    <WalletPageShell
+      walletId={id}
+      walletName={wallet?.label ?? "Master wallet"}
+      section="Developers"
+    >
 
-      <div className="relative z-10 bg-burgundy/20 py-2 text-center text-xs text-burgundy-bright">
-        You are currently on <strong>test mode</strong> (Stellar testnet).
-      </div>
-      <div className="relative z-10 flex flex-1">
-        <WalletSidebar walletId={id} walletName={wallet?.label ?? "Master wallet"} />
-
-        <div className="flex flex-1 flex-col">
-          <header className="flex items-center justify-between border-b border-border px-8 py-4">
-            <div className="flex items-center gap-2 text-sm text-muted">
-              <Link href="/dashboard" className="hover:text-foreground">
-                My Wallets
-              </Link>
-              <span>›</span>
-              <span className="text-foreground">Developers</span>
-            </div>
-            <button onClick={logout} className="text-sm text-muted hover:text-foreground">
-              ⏻
-            </button>
-          </header>
-
-          <main className="flex-1 px-8 py-8">
             <div className="mx-auto max-w-4xl">
               {/* title + actions */}
               <div className="flex flex-wrap items-center justify-between gap-4">
@@ -208,9 +189,8 @@ export default function DevelopersPage({
                 </div>
               )}
             </div>
-          </main>
-        </div>
-      </div>
+
+    </WalletPageShell>
 
       {confirmingRegen && (
         <RegenerateKeyModal
@@ -219,7 +199,7 @@ export default function DevelopersPage({
           onClose={() => setConfirmingRegen(false)}
         />
       )}
-    </div>
+  </>
   );
 }
 
