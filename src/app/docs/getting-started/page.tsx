@@ -1,3 +1,5 @@
+export const metadata = { title: "Getting Started — Octo" };
+
 import Link from "next/link";
 import { Prose, Step, Code, Callout } from "@/components/docs/DocsUI";
 

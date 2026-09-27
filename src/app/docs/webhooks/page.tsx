@@ -1,3 +1,5 @@
+export const metadata = { title: "Webhooks — Octo" };
+
 import { Prose, Code, Callout, Endpoint } from "@/components/docs/DocsUI";
 
 export default function Webhooks() {

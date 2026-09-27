@@ -1,8 +1,8 @@
 "use client";
 
 import { use, useCallback, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { useAuth } from "@/lib/useAuth";
+import { WalletPageShell } from "@/components/dashboard/WalletPageShell";
 import {
   getWallet,
   listTransactionsPage,
@@ -10,8 +10,6 @@ import {
   type WalletView,
   type Transaction,
 } from "@/lib/wallets";
-import { WalletSidebar } from "@/components/dashboard/WalletSidebar";
-import { DashboardBackground } from "@/components/dashboard/DashboardBackground";
 import { Modal, CopyField } from "@/components/dashboard/Modal";
 import { Stat, ActionButton, Panel, Empty } from "@/components/dashboard/WalletUI";
 import { Pagination } from "@/components/dashboard/Pagination";
@@ -30,7 +28,7 @@ export default function TransactionsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { user, token, loading, logout } = useAuth();
+  const { user, token, loading } = useAuth();
 
   const [wallet, setWallet] = useState<WalletView | null>(null);
   const [txns, setTxns] = useState<Transaction[]>([]);
@@ -135,37 +133,13 @@ export default function TransactionsPage({
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-background">
-      <DashboardBackground />
+    <>
+    <WalletPageShell
+      walletId={id}
+      walletName={wallet?.label ?? "Master wallet"}
+      section="Transactions"
+    >
 
-      <div className="relative z-10 bg-burgundy/20 py-2 text-center text-xs text-burgundy-bright">
-        You are currently on <strong>test mode</strong> (Stellar testnet).
-      </div>
-      <div className="relative z-10 flex flex-1">
-        <WalletSidebar
-          walletId={id}
-          walletName={wallet?.label ?? "Master wallet"}
-        />
-
-        <div className="flex flex-1 flex-col">
-          <header className="flex items-center justify-between border-b border-border px-8 py-4">
-            <div className="flex items-center gap-2 text-sm text-muted">
-              <Link href="/dashboard" className="hover:text-foreground">
-                My Wallets
-              </Link>
-              <span>›</span>
-              <Link href={`/dashboard/wallets/${id}`} className="hover:text-foreground">
-                {wallet?.label ?? "Master wallet"}
-              </Link>
-              <span>›</span>
-              <span className="text-foreground">Transactions</span>
-            </div>
-            <button onClick={logout} className="text-sm text-muted hover:text-foreground">
-              ⏻
-            </button>
-          </header>
-
-          <main className="flex-1 px-8 py-8">
           <div className="mx-auto w-full max-w-6xl space-y-6">
             <div>
               <h1 className="text-2xl font-semibold text-foreground">Transactions</h1>
@@ -266,14 +240,13 @@ export default function TransactionsPage({
               />
             </Panel>
           </div>
-          </main>
-        </div>
-      </div>
+
+    </WalletPageShell>
 
       {selected && (
         <TransactionDetail tx={selected} onClose={() => setSelected(null)} />
       )}
-    </div>
+  </>
   );
 }
 

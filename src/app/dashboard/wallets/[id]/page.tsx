@@ -1,9 +1,9 @@
 "use client";
 
 import { use, useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/useAuth";
+import { WalletPageShell } from "@/components/dashboard/WalletPageShell";
 import {
   getWallet,
   getBalances,
@@ -46,9 +46,7 @@ import {
 import { friendlyResultMessage, isExpiredResult } from "@/lib/stellar/resultCodes";
 import { usePolling } from "@/lib/usePolling";
 import { OtpInput } from "@/components/auth/OtpInput";
-import { WalletSidebar } from "@/components/dashboard/WalletSidebar";
 import { AssetIcon } from "@/components/dashboard/AssetIcon";
-import { DashboardBackground } from "@/components/dashboard/DashboardBackground";
 import { Modal, CopyField } from "@/components/dashboard/Modal";
 import { DepositQrCodes } from "@/components/qr/DepositQrCodes";
 import { TrustlineDetails } from "@/components/trustlines/TrustlineDetails";
@@ -65,7 +63,7 @@ export default function WalletOverview({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { user, token, loading, logout } = useAuth();
+  const { user, token, loading } = useAuth();
 
   const [wallet, setWallet] = useState<WalletView | null>(null);
   const [balances, setBalances] = useState<Balance[]>([]);
@@ -148,38 +146,14 @@ export default function WalletOverview({
       ))} XLM`;
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-background">
-      <DashboardBackground />
-      {askingRef && <NewAddressModal onSubmit={createWithRef} onClose={() => setAskingRef(false)} />}
+    <>
+    {askingRef && <NewAddressModal onSubmit={createWithRef} onClose={() => setAskingRef(false)} />}
+    <WalletPageShell
+      walletId={id}
+      walletName={wallet?.label ?? "Master wallet"}
+      section="Overview"
+    >
 
-      <div className="relative z-10 bg-burgundy/20 py-2 text-center text-xs text-burgundy-bright">
-        You are currently on <strong>test mode</strong> (Stellar testnet).
-      </div>
-      <div className="relative z-10 flex flex-1">
-        <WalletSidebar
-          walletId={id}
-          walletName={wallet?.label ?? "Master wallet"}
-        />
-
-        <div className="flex flex-1 flex-col">
-          {/* topbar */}
-          <header className="flex items-center justify-between border-b border-border px-8 py-4">
-            <div className="flex items-center gap-2 text-sm text-muted">
-              <Link href="/dashboard" className="hover:text-foreground">
-                My Wallets
-              </Link>
-              <span>›</span>
-              <span className="text-foreground">Overview</span>
-            </div>
-            <button
-              onClick={logout}
-              className="text-sm text-muted hover:text-foreground"
-            >
-              ⏻
-            </button>
-          </header>
-
-          <main className="flex-1 px-8 py-8">
           <div className="mx-auto w-full max-w-6xl space-y-6">
             {/* header */}
             <div>
@@ -363,9 +337,8 @@ export default function WalletOverview({
               )}
             </Panel>
           </div>
-          </main>
-        </div>
-      </div>
+
+    </WalletPageShell>
 
       {showDeposit && (
         <DepositModal
@@ -400,7 +373,7 @@ export default function WalletOverview({
           }}
         />
       )}
-    </div>
+  </>
   );
 }
 
