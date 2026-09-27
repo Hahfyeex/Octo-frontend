@@ -2,12 +2,10 @@
 
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/lib/useAuth";
-import { WalletPageShell } from "@/components/dashboard/WalletPageShell";
+import { useWallet } from "@/lib/useWallet";
 import {
-  getWallet,
   listTransactionsPage,
   displayAssetCode,
-  type WalletView,
   type Transaction,
 } from "@/lib/wallets";
 import { Modal, CopyField } from "@/components/dashboard/Modal";
@@ -30,7 +28,7 @@ export default function TransactionsPage({
   const { id } = use(params);
   const { user, token, loading } = useAuth();
 
-  const [wallet, setWallet] = useState<WalletView | null>(null);
+  const { wallet } = useWallet(id);
   const [txns, setTxns] = useState<Transaction[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [assetFilter, setAssetFilter] = useState<string>("all");
@@ -74,9 +72,6 @@ export default function TransactionsPage({
 
   useEffect(() => {
     if (!token) return;
-    getWallet(token, id)
-      .then(setWallet)
-      .catch(() => setWallet(null));
     load(null);
   }, [token, id, load]);
 

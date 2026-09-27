@@ -40,7 +40,7 @@ export function DashboardShell({
       <DashboardBackground />
 
       {/* test-mode banner */}
-      <div className="relative z-10 bg-burgundy/20 py-2 text-center text-xs text-burgundy-bright">
+      <div className="test-mode-banner relative z-10 bg-burgundy/20 py-2 text-center text-xs text-burgundy-bright">
         You are currently on <strong>test mode</strong> (Stellar testnet).
         Mainnet support is coming soon.
       </div>

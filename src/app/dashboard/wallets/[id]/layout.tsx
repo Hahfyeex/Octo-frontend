@@ -1,7 +1,15 @@
-import type { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = { title: "Wallet" };
+import { use } from "react";
+import { WalletProvider } from "@/lib/useWallet";
 
-export default function WalletLayout({ children }: { children: React.ReactNode }) {
-  return children;
+export default function WalletLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
+  return <WalletProvider walletId={id}>{children}</WalletProvider>;
 }

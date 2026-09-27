@@ -3,15 +3,13 @@
 import { use, useEffect, useState, type FormEvent } from "react";
 import { StrKey } from "@stellar/stellar-base";
 import { useAuth } from "@/lib/useAuth";
-import { WalletPageShell } from "@/components/dashboard/WalletPageShell";
+import { useWallet } from "@/lib/useWallet";
 import {
-  getWallet,
   getWhitelistConfig,
   setWhitelistEnabled,
   listWhitelistedAddresses,
   addWhitelistedAddress,
   removeWhitelistedAddress,
-  type WalletView,
   type WhitelistedAddress,
 } from "@/lib/wallets";
 import { Stat, ActionButton, Panel, Empty } from "@/components/dashboard/WalletUI";
@@ -38,7 +36,7 @@ export default function WhitelistPage({
   const { id } = use(params);
   const { user, token, loading } = useAuth();
 
-  const [wallet, setWallet] = useState<WalletView | null>(null);
+  const { wallet } = useWallet(id);
   const [enabled, setEnabled] = useState(false);
   const [entries, setEntries] = useState<WhitelistedAddress[]>([]);
   const [toggling, setToggling] = useState(false);
@@ -53,7 +51,6 @@ export default function WhitelistPage({
 
   useEffect(() => {
     if (!token) return;
-    getWallet(token, id).then(setWallet).catch(() => setWallet(null));
     getWhitelistConfig(token, id)
       .then((c) => setEnabled(c.enabled))
       .catch(() => {});

@@ -2,12 +2,10 @@
 
 import { use, useEffect, useState } from "react";
 import { useAuth } from "@/lib/useAuth";
-import { WalletPageShell } from "@/components/dashboard/WalletPageShell";
+import { useWallet } from "@/lib/useWallet";
 import {
-  getWallet,
   getApiKey,
   generateApiKey,
-  type WalletView,
   type ApiKeyInfo,
 } from "@/lib/wallets";
 import { PageSpinner } from "@/components/OctoSpinner";
@@ -26,7 +24,7 @@ export default function DevelopersPage({
   const { id } = use(params);
   const { user, token, loading } = useAuth();
 
-  const [wallet, setWallet] = useState<WalletView | null>(null);
+  const { wallet } = useWallet(id);
   const [keyInfo, setKeyInfo] = useState<ApiKeyInfo | null>(null);
   const [fullKey, setFullKey] = useState<string | null>(null); // shown once after generate
   const [revealed, setRevealed] = useState(false);
@@ -36,7 +34,6 @@ export default function DevelopersPage({
 
   useEffect(() => {
     if (!token) return;
-    getWallet(token, id).then(setWallet).catch(() => {});
     getApiKey(token, id)
       .then(setKeyInfo)
       .catch(() => setKeyLoadFailed(true));

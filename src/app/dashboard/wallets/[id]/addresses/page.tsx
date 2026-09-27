@@ -3,12 +3,10 @@
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/useAuth";
-import { WalletPageShell } from "@/components/dashboard/WalletPageShell";
+import { useWallet } from "@/lib/useWallet";
 import {
-  getWallet,
   listAddresses,
   createAddress,
-  type WalletView,
   type Address,
 } from "@/lib/wallets";
 import { Modal, CopyField } from "@/components/dashboard/Modal";
@@ -31,7 +29,7 @@ export default function AddressesPage({
   const { id } = use(params);
   const { user, token, loading } = useAuth();
 
-  const [wallet, setWallet] = useState<WalletView | null>(null);
+  const { wallet } = useWallet(id);
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -56,7 +54,6 @@ export default function AddressesPage({
 
   useEffect(() => {
     if (!token) return;
-    getWallet(token, id).then(setWallet).catch(() => setWallet(null));
     listAddresses(token, id)
       .then((a) => {
         setAddresses(a);

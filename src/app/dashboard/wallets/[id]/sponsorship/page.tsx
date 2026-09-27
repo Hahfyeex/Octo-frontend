@@ -2,8 +2,8 @@
 
 import { use, useEffect, useState } from "react";
 import { useAuth } from "@/lib/useAuth";
-import { WalletPageShell } from "@/components/dashboard/WalletPageShell";
-import { getWallet, amountToStroops, type WalletView } from "@/lib/wallets";
+import { useWallet } from "@/lib/useWallet";
+import { amountToStroops } from "@/lib/wallets";
 import {
   getSponsorshipConfig,
   updateSponsorshipConfig,
@@ -23,7 +23,7 @@ export default function SponsorshipSettingsPage({
   const { id } = use(params);
   const { user, token, loading } = useAuth();
 
-  const [wallet, setWallet] = useState<WalletView | null>(null);
+  const { wallet } = useWallet(id);
   const [config, setConfig] = useState<SponsorshipConfig | null>(null);
 
   // form state (XLM strings, converted to stroops only at the API boundary)
@@ -37,7 +37,6 @@ export default function SponsorshipSettingsPage({
 
   useEffect(() => {
     if (!token) return;
-    getWallet(token, id).then(setWallet).catch(() => {});
     getSponsorshipConfig(asAuthToken(token), asWalletId(id))
       .then((c) => {
         setConfig(c);
