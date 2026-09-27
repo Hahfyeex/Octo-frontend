@@ -45,7 +45,12 @@ function intentInputsKey(amountUsdcStroops: number, name: string, email: string)
 }
 
 function celebrate() {
-  confetti({ particleCount: 140, spread: 80, origin: { y: 0.6 } });
+  confetti({ 
+    particleCount: 140, 
+    spread: 80, 
+    origin: { y: 0.6 },
+    disableForReducedMotion: true 
+  });
 }
 
 // Sends the payer back to the merchant's site after a short delay; fails open on a bad URL.

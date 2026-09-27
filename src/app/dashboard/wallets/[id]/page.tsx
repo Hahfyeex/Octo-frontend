@@ -152,7 +152,7 @@ export default function WalletOverview({
       <DashboardBackground />
       {askingRef && <NewAddressModal onSubmit={createWithRef} onClose={() => setAskingRef(false)} />}
 
-      <div className="relative z-10 bg-burgundy/20 py-2 text-center text-xs text-burgundy-bright">
+      <div className="test-mode-banner relative z-10 bg-burgundy/20 py-2 text-center text-xs text-burgundy-bright">
         You are currently on <strong>test mode</strong> (Stellar testnet).
       </div>
       <div className="relative z-10 flex flex-1">
@@ -520,19 +520,22 @@ function TrustlineModal({
       </div>
 
       <div className="mt-4">
-        <label className="text-xs text-muted">Wallet password (to sign)</label>
+        <label htmlFor="trustline-password" className="text-xs text-muted">Wallet password (to sign)</label>
         <input
+          id="trustline-password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Your encryption password"
           autoComplete="current-password"
+          aria-invalid={error ? "true" : "false"}
+          aria-describedby={error ? "trustline-error" : undefined}
           className="mt-1 w-full rounded-lg border border-border bg-surface-sunken px-3 py-2 text-sm text-foreground placeholder:text-muted/50 focus:border-burgundy-bright focus:outline-none"
         />
       </div>
 
       {error && (
-        <p className="mt-4 rounded-lg border border-burgundy/40 bg-burgundy/10 px-3 py-2 text-sm text-burgundy-bright">
+        <p id="trustline-error" role="alert" className="mt-4 rounded-lg border border-burgundy/40 bg-burgundy/10 px-3 py-2 text-sm text-burgundy-bright">
           {error}
         </p>
       )}
@@ -1023,13 +1026,34 @@ function WithdrawModal({
 
       <div className="mt-5 space-y-4">
         <div>
-          <label className="text-xs text-muted">Asset</label>
-          <div className="mt-1 flex flex-wrap gap-2">
+          <label id="asset-group-label" className="text-xs text-muted">Asset</label>
+          <div 
+            className="mt-1 flex flex-wrap gap-2" 
+            role="radiogroup" 
+            aria-labelledby="asset-group-label"
+          >
             {assets.map((a) => (
               <button
                 key={a.code}
                 type="button"
+                role="radio"
+                aria-checked={a.code === selectedCode}
                 onClick={() => setSelectedCode(a.code)}
+                onKeyDown={(e) => {
+                  const currentIndex = assets.findIndex((asset) => asset.code === selectedCode);
+                  let nextIndex = currentIndex;
+                  if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+                    e.preventDefault();
+                    nextIndex = (currentIndex + 1) % assets.length;
+                  } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+                    e.preventDefault();
+                    nextIndex = currentIndex === 0 ? assets.length - 1 : currentIndex - 1;
+                  }
+                  if (nextIndex !== currentIndex) {
+                    setSelectedCode(assets[nextIndex].code);
+                  }
+                }}
+                tabIndex={a.code === selectedCode ? 0 : -1}
                 className={`rounded-lg border px-3 py-1.5 text-sm transition-colors ${
                   a.code === selectedCode
                     ? "border-burgundy-bright bg-burgundy/20 text-foreground"
@@ -1047,17 +1071,20 @@ function WithdrawModal({
           )}
         </div>
         <div>
-          <label className="text-xs text-muted">Destination address</label>
+          <label htmlFor="destination-input" className="text-xs text-muted">Destination address</label>
           <input
+            id="destination-input"
             value={destination}
             onChange={(e) => setDestination(e.target.value.trim())}
             placeholder="G… or M…"
+            aria-invalid={error ? "true" : "false"}
+            aria-describedby={error ? "withdraw-error" : undefined}
             className="mt-1 w-full rounded-lg border border-border bg-surface-sunken px-3 py-2 font-mono text-sm text-foreground placeholder:text-muted/50 focus:border-burgundy-bright focus:outline-none"
           />
         </div>
         <div>
           <div className="flex items-center justify-between">
-            <label className="text-xs text-muted">Amount ({selected.code})</label>
+            <label htmlFor="amount-input" className="text-xs text-muted">Amount ({selected.code})</label>
             <button
               type="button"
               onClick={() => setAmount(formatStroops(spendableStroops))}
@@ -1068,21 +1095,27 @@ function WithdrawModal({
             </button>
           </div>
           <input
+            id="amount-input"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             inputMode="decimal"
             placeholder="0.0000000"
+            aria-invalid={error ? "true" : "false"}
+            aria-describedby={error ? "withdraw-error" : undefined}
             className="mt-1 w-full rounded-lg border border-border bg-surface-sunken px-3 py-2 text-sm text-foreground placeholder:text-muted/50 focus:border-burgundy-bright focus:outline-none"
           />
         </div>
         <div>
-          <label className="text-xs text-muted">Wallet password (to sign)</label>
+          <label htmlFor="password-input" className="text-xs text-muted">Wallet password (to sign)</label>
           <input
+            id="password-input"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Your encryption password"
             autoComplete="current-password"
+            aria-invalid={error ? "true" : "false"}
+            aria-describedby={error ? "withdraw-error" : undefined}
             className="mt-1 w-full rounded-lg border border-border bg-surface-sunken px-3 py-2 text-sm text-foreground placeholder:text-muted/50 focus:border-burgundy-bright focus:outline-none"
           />
           <p className="mt-1 text-[11px] text-muted">
@@ -1092,7 +1125,7 @@ function WithdrawModal({
         </div>
 
         {error && (
-          <p className="rounded-lg border border-burgundy/40 bg-burgundy/10 px-3 py-2 text-sm text-burgundy-bright">
+          <p id="withdraw-error" role="alert" className="rounded-lg border border-burgundy/40 bg-burgundy/10 px-3 py-2 text-sm text-burgundy-bright">
             {error}
           </p>
         )}
