@@ -1,3 +1,5 @@
+export const metadata = { title: "Security — Octo" };
+
 import { Prose, Callout } from "@/components/docs/DocsUI";
 
 export default function Security() {

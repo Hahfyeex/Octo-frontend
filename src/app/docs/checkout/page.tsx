@@ -1,3 +1,5 @@
+export const metadata = { title: "Checkout — Octo" };
+
 import { Prose, Code, Endpoint, ParamTable, Callout } from "@/components/docs/DocsUI";
 
 export default function Checkout() {

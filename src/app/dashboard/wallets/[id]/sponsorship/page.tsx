@@ -1,7 +1,6 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import Link from "next/link";
 import { useAuth } from "@/lib/useAuth";
 import { useWallet } from "@/lib/useWallet";
 import { amountToStroops } from "@/lib/wallets";
@@ -11,8 +10,6 @@ import {
   type SponsorshipConfig,
 } from "@/lib/sponsorship";
 import { asAuthToken, asWalletId } from "@/lib/brands";
-import { WalletSidebar } from "@/components/dashboard/WalletSidebar";
-import { DashboardBackground } from "@/components/dashboard/DashboardBackground";
 import { SponsoredTransactionsTable } from "@/components/dashboard/SponsoredTransactionsTable";
 import { ApiError } from "@/lib/api";
 import { PageSpinner } from "@/components/OctoSpinner";
@@ -24,7 +21,7 @@ export default function SponsorshipSettingsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { user, token, loading, logout } = useAuth();
+  const { user, token, loading } = useAuth();
 
   const { wallet } = useWallet(id);
   const [config, setConfig] = useState<SponsorshipConfig | null>(null);
@@ -118,30 +115,13 @@ export default function SponsorshipSettingsPage({
       : 0;
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-background">
-      <DashboardBackground />
+    <>
+    <WalletPageShell
+      walletId={id}
+      walletName={wallet?.label ?? "Master wallet"}
+      section="Sponsorship"
+    >
 
-      <div className="relative z-10 bg-burgundy/20 py-2 text-center text-xs text-burgundy-bright">
-        You are currently on <strong>test mode</strong> (Stellar testnet).
-      </div>
-      <div className="relative z-10 flex flex-1">
-        <WalletSidebar walletId={id} walletName={wallet?.label ?? "Master wallet"} />
-
-        <div className="flex flex-1 flex-col">
-          <header className="flex items-center justify-between border-b border-border px-8 py-4">
-            <div className="flex items-center gap-2 text-sm text-muted">
-              <Link href="/dashboard" className="hover:text-foreground">
-                My Wallets
-              </Link>
-              <span>›</span>
-              <span className="text-foreground">Sponsorship</span>
-            </div>
-            <button onClick={logout} className="text-sm text-muted hover:text-foreground">
-              ⏻
-            </button>
-          </header>
-
-          <main className="flex-1 px-8 py-8">
             <div className="mx-auto max-w-2xl space-y-6">
               <div>
                 <h1 className="text-xl font-semibold text-foreground">
@@ -266,15 +246,14 @@ export default function SponsorshipSettingsPage({
                 <SponsoredTransactionsTable walletId={id} token={token} />
               )}
             </div>
-          </main>
-        </div>
-      </div>
+
+    </WalletPageShell>
 
       {toast && (
         <div className="fixed bottom-6 right-6 rounded-xl border border-burgundy/40 bg-burgundy/20 px-4 py-3 text-sm text-burgundy-bright shadow-lg">
           ✓ {toast}
         </div>
       )}
-    </div>
+  </>
   );
 }

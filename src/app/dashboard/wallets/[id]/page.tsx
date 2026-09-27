@@ -36,7 +36,7 @@ export default function WalletOverview({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { user, token, loading, logout } = useAuth();
+  const { user, token, loading } = useAuth();
 
   const { wallet, update: updateWallet } = useWallet(id);
   const [balances, setBalances] = useState<Balance[]>([]);
@@ -118,9 +118,13 @@ export default function WalletOverview({
       ))} XLM`;
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-background">
-      <DashboardBackground />
-      {askingRef && <NewAddressModal onSubmit={createWithRef} onClose={() => setAskingRef(false)} />}
+    <>
+    {askingRef && <NewAddressModal onSubmit={createWithRef} onClose={() => setAskingRef(false)} />}
+    <WalletPageShell
+      walletId={id}
+      walletName={wallet?.label ?? "Master wallet"}
+      section="Overview"
+    >
 
       <div className="test-mode-banner relative z-10 bg-burgundy/20 py-2 text-center text-xs text-burgundy-bright">
         You are currently on <strong>test mode</strong> (Stellar testnet).
@@ -333,9 +337,8 @@ export default function WalletOverview({
               )}
             </Panel>
           </div>
-          </main>
-        </div>
-      </div>
+
+    </WalletPageShell>
 
       {showDeposit && (
         <DepositModal
@@ -370,6 +373,6 @@ export default function WalletOverview({
           }}
         />
       )}
-    </div>
+  </>
   );
 }

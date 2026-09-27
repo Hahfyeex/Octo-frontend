@@ -1,3 +1,5 @@
+export const metadata = { title: "Addresses API — Octo" };
+
 import { Prose, Code, Endpoint, ParamTable } from "@/components/docs/DocsUI";
 
 export default function ApiAddresses() {
